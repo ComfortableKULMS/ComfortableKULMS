@@ -44,14 +44,17 @@ const createDueMap = (settings: Settings, courseMap: CourseMap): DueMap => {
  * Add notification badge for new Assignment/Quiz
  */
 export async function createFavoritesBar(settings: Settings, entities: EntityProtocol[]): Promise<void> {
-    const defaultTab = document.querySelectorAll(".Mrphs-sitesNav__menuitem");
-    const defaultTabCount = Object.keys(defaultTab).length;
+    // const defaultTab = document.querySelectorAll(".Mrphs-sitesNav__menuitem");
+    // const defaultTabCount = Object.keys(defaultTab).length;
+    const defaultTab = document.querySelectorAll("#pinned-site-list > li.site-list-item");
+    const defaultTabCount = defaultTab.length;
 
     const courseMap = createCourseMap(entities);
     const dueMap = createDueMap(settings, courseMap);
 
     for (let j = 0; j < defaultTabCount; j++) {
-        const aTag = defaultTab[j].getElementsByClassName("link-container")[0] as HTMLAnchorElement | undefined;
+        // const aTag = defaultTab[j].getElementsByClassName("link-container")[0] as HTMLAnchorElement | undefined;
+        const aTag = defaultTab[j].querySelector(".sidebar-site-title") as HTMLAnchorElement | null;
         const href = aTag?.href;
         const hrefContent = href?.match("(https?://[^/]+)/portal/site-?[a-z]*/([^/]+)");
         if (hrefContent === undefined || hrefContent === null) {
@@ -63,14 +66,25 @@ export async function createFavoritesBar(settings: Settings, entities: EntityPro
         if (courseInfo === undefined) continue;
 
         const tabClass = dueCategoryClassMap[courseInfo.due];
-        const aTagCount = defaultTab[j].getElementsByTagName("a").length;
+        // const aTagCount = defaultTab[j].getElementsByTagName("a").length;
         // Apply color to course button
+        /*
         if(tabClass !== "") {   // If not duePassed
             for (let i = 0; i < aTagCount; i++) {
                 defaultTab[j].getElementsByTagName("a")[i].classList.add(tabClass);
             }
         }
         defaultTab[j].classList.add(tabClass);
+        */
+        if(tabClass !== "") {   // If not duePassed
+            // 1. タブ全体（li要素）にクラスを追加し、タブの背景を塗る
+            defaultTab[j].classList.add(tabClass);
+            
+            if (aTag) {
+                // 2. リンクテキスト（a要素）にも同じクラスを追加し、文字色を変える
+                aTag.classList.add(tabClass);
+            }
+        }
         // Put notification badge
         if (!courseInfo.isRead) {
             defaultTab[j].classList.add("cs-notification-badge");
