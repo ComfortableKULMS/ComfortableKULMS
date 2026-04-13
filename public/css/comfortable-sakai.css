@@ -802,3 +802,27 @@ input:checked + .cs-toggle-slider:after {
     transform: translateX(-100%);
 }
 
+/* 1. トースト全体を基準位置（relative）にする */
+.toast-body {
+  position: relative;
+}
+
+/* 2. トーストの中にあるリンクの当たり判定を全体に広げる */
+.toast-body a::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* （おまけ）マウスを乗せたときに背景色を少し変えると、押せる感がアップします */
+.toast-body:hover {
+  /* 背景色ではなく、要素全体を少し明るく（または暗く）する */
+  filter: brightness(1.2); /* 1.0が基準。1.2で少し明るくなります */
+  
+  /* 補足: もし上記でまぶしすぎる場合は、代わりに以下のように半透明にすると自然です */
+  /* opacity: 0.8; */
+}
