@@ -23,7 +23,8 @@ describe("getFetchTime(showCompleted)", () => {
         const settings = new Settings();
         settings.miniSakaiOption = {
             showCompletedEntry: true,
-            showLateAcceptedEntry: false
+            showLateAcceptedEntry: false,
+            showTopNavLink: true
         };
         settings.appInfo.currentTime = 100;
         const input: Array<EntryProtocol> = [
@@ -39,7 +40,8 @@ describe("getFetchTime(showCompleted)", () => {
         const settings = new Settings();
         settings.miniSakaiOption = {
             showCompletedEntry: true,
-            showLateAcceptedEntry: true
+            showLateAcceptedEntry: true,
+            showTopNavLink: true
         };
         settings.appInfo.currentTime = 100;
         const input: Array<EntryProtocol> = [
@@ -55,7 +57,8 @@ describe("getFetchTime(showCompleted)", () => {
         const settings = new Settings();
         settings.miniSakaiOption = {
             showCompletedEntry: true,
-            showLateAcceptedEntry: false
+            showLateAcceptedEntry: false,
+            showTopNavLink: true
         };
         settings.appInfo.currentTime = 100;
         const input: Array<EntryProtocol> = [
@@ -71,7 +74,8 @@ describe("getFetchTime(showCompleted)", () => {
         const settings = new Settings();
         settings.miniSakaiOption = {
             showCompletedEntry: true,
-            showLateAcceptedEntry: true
+            showLateAcceptedEntry: true,
+            showTopNavLink: true
         };
         settings.appInfo.currentTime = 100;
         const input: Array<EntryProtocol> = [
@@ -87,7 +91,8 @@ describe("getFetchTime(showCompleted)", () => {
         const settings = new Settings();
         settings.miniSakaiOption = {
             showCompletedEntry: true,
-            showLateAcceptedEntry: false
+            showLateAcceptedEntry: false,
+            showTopNavLink: true
         };
         settings.appInfo.currentTime = 500;
         const input: Array<EntryProtocol> = [
@@ -103,7 +108,8 @@ describe("getFetchTime(showCompleted)", () => {
         const settings = new Settings();
         settings.miniSakaiOption = {
             showCompletedEntry: true,
-            showLateAcceptedEntry: true
+            showLateAcceptedEntry: true,
+            showTopNavLink: true
         };
         settings.appInfo.currentTime = 500;
         const input: Array<EntryProtocol> = [

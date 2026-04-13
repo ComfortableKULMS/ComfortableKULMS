@@ -4,6 +4,8 @@ import { isLoggedIn, miniSakaiReady } from "./utils";
 import submitDetect from "./features/submitDetect";
 // Example in a content script file (e.g., content.ts or part of your main extension logic)
 import { injectPdfThumbnails, injectThumbnailsToOngoingAssignment } from './thumbnails';
+import { createKulmsTopNav } from "./features/topnav/topnav";
+import { getStoredSettings } from "./features/setting/getSetting";
 
 async function main() {
     if (isLoggedIn()) {
@@ -14,6 +16,8 @@ async function main() {
         miniSakaiReady();
         await saveHostName(hostname);
         submitDetect(hostname);
+        const settings = await getStoredSettings(hostname); 
+        createKulmsTopNav(settings);
         injectPdfThumbnails();
         injectThumbnailsToOngoingAssignment();
     }

@@ -90,10 +90,33 @@ export async function createFavoritesBar(settings: Settings, entities: EntityPro
             defaultTab[j].classList.add("cs-notification-badge");
         }
     }
+
+    const topTabs = document.querySelectorAll(".custom-kulms-tab");
+    for (let i = 0; i < topTabs.length; i++) {
+        const tab = topTabs[i] as HTMLElement;
+        const courseID = tab.getAttribute("data-site");
+        if (!courseID) continue;
+
+        const courseInfo = dueMap.get(courseID);
+        if (!courseInfo) continue;
+
+        const tabClass = dueCategoryClassMap[courseInfo.due];
+
+        // 色（期限カテゴリ）の適用
+        if (tabClass !== "") {
+            tab.classList.add(tabClass);
+        }
+
+        // 未読バッジの適用
+        if (!courseInfo.isRead) {
+            tab.classList.add("cs-notification-badge");
+        }
+    }
 }
 
 export const resetFavoritesBar = (): void => {
     const classList = ["cs-notification-badge", "cs-tab-danger", "cs-tab-warning", "cs-tab-success", "cs-tab-other"];
+    /*
     for (const c of classList) {
         const q = document.querySelectorAll(`.${c}`);
         // @ts-ignore
@@ -101,5 +124,19 @@ export const resetFavoritesBar = (): void => {
             _.classList.remove(`${c}`);
             _.style = "";
         }
+    }
+    */
+    // 既存の左メニューのリセット
+    const defaultTab = document.querySelectorAll(".site-list-item");
+    for (const tab of Array.from(defaultTab)) {
+        tab.classList.remove(...classList);
+        const aTag = tab.querySelector("a");
+        if (aTag) aTag.classList.remove(...classList);
+    }
+
+    // ▼ 新規追加：上部タブのリセット
+    const topTabs = document.querySelectorAll(".custom-kulms-tab");
+    for (const tab of Array.from(topTabs)) {
+        tab.classList.remove(...classList);
     }
 }
