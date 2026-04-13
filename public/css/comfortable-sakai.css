@@ -826,3 +826,34 @@ input:checked + .cs-toggle-slider:after {
   /* 補足: もし上記でまぶしすぎる場合は、代わりに以下のように半透明にすると自然です */
   /* opacity: 0.8; */
 }
+
+/* --- comfortable-sakai.css の末尾に追記 --- */
+
+/* 「概要を管理」ボタンが改行を引き起こすのを強制的に防ぐ */
+.breadcrumb .manage-overview-link {
+    display: inline-flex !important;
+    align-items: center;
+}
+
+/* タブをまとめる入れ物の設定（右隣に並べる） */
+.custom-kulms-tab-wrapper {
+    display: inline-flex !important;
+    align-items: center;
+    flex-wrap: wrap;      /* 画面が狭いときは折り返す */
+    gap: 5px;             /* ボタン同士の隙間 */
+    margin-left: 0;       /* 左の隙間は不要なので0に */
+    margin-top: 5px;     /* ▼【ここを追加】上の要素から10px下に下げる */
+    width: 100%;
+}
+
+/* --- 選択中のタブのデザイン（課題の色を維持しつつ目立たせる） --- */
+.custom-kulms-tab.custom-tab-active {
+    /* 背景色（background-color）は指定しないことで、課題の色をそのまま透けさせます */
+    font-weight: bold !important;                  /* 文字を太くする */
+    
+    /* ▼ポイント：外側にくっきりとした青い枠線（影）をつける */
+    box-shadow: 0 0 0 2px #007bff !important;                        
+    
+    z-index: 10; /* 浮かした時に他のタブの下に隠れないようにする */
+    pointer-events: none; /* 現在のページなのでクリックできないようにする */
+}
