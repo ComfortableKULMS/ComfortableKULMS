@@ -6,6 +6,7 @@ import submitDetect from "./features/submitDetect";
 import { injectPdfThumbnails, injectThumbnailsToOngoingAssignment } from './thumbnails';
 import { createKulmsTopNav } from "./features/topnav/topnav";
 import { getStoredSettings } from "./features/setting/getSetting";
+import { handleCollapseHome } from "./features/homeClose/homeClose";
 
 async function main() {
     if (isLoggedIn()) {
@@ -18,6 +19,7 @@ async function main() {
         submitDetect(hostname);
         const settings = await getStoredSettings(hostname); 
         createKulmsTopNav(settings);
+        handleCollapseHome(settings);
         injectPdfThumbnails();
         injectThumbnailsToOngoingAssignment();
     }

@@ -21,6 +21,7 @@ type DisplayOption = {
     showCompletedEntry: boolean;
     showLateAcceptedEntry: boolean;
     showTopNavLink: boolean;
+    collapseHome: boolean;
 };
 
 type CSColor = {
@@ -64,7 +65,8 @@ export class Settings {
     miniSakaiOption: DisplayOption = {
         showCompletedEntry: false, // 要望よりデフォルトではチェック時に色が消えるように変更
         showLateAcceptedEntry: false,
-        showTopNavLink: true
+        showTopNavLink: true,
+        collapseHome: true
     };
     color: CSColor = {
         topDanger: "#f78989",
