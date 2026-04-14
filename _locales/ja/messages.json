@@ -16,6 +16,7 @@
   "settings_display_late_submit_assignment": {"message": "遅延提出可能な課題を表示する"},
   "settings_reset_colors": {"message": "デフォルト色に戻す"},
   "settings_show_top_nav": {"message": "上部タブ（クイックナビゲーション）を表示する"},
+  "settings_collapse_home": {"message": "サイドバーの「Home」をデフォルトで閉じる"},
   
   "settings_colors_hour": { "message": "【$color_type$】 締切$time$時間前",
     "placeholders": {

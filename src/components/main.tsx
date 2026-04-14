@@ -16,6 +16,7 @@ import { removeMemoEntry, saveNewMemoEntry } from "../features/entity/memo/saveM
 import { createFavoritesBar, resetFavoritesBar } from "./favoritesBar";
 import { getSakaiCourses } from "../features/course/getCourse";
 import { createKulmsTopNav } from "../features/topnav/topnav";
+import { handleCollapseHome } from "../features/homeClose/homeClose";
 
 export const MiniSakaiContext = React.createContext<{
     settings: Settings;
@@ -126,6 +127,7 @@ export class MiniSakaiRoot extends React.Component<MiniSakaiRootProps, MiniSakai
             resetFavoritesBar();
             createFavoritesBar(this.state.settings, this.state.entities);
             applyColorSettings(this.state.settings, this.props.subset);
+            handleCollapseHome(this.state.settings);
         }
     }
 

@@ -15,6 +15,7 @@
   "settings_color_checked_item": {"message": "Color course tabs including checked items"},
   "settings_display_late_submit_assignment": {"message": "Show assignments that can be submitted late"},
   "settings_show_top_nav": {"message": "Show top navigation tabs"},
+  "settings_collapse_home": {"message": "Collapse the 'Home' sidebar by default"},
   "settings_reset_colors": {"message": "Reset to default colors"},
   "settings_colors_hour": { "message": "[$color_type$] $time$ hours before due",
     "placeholders": {

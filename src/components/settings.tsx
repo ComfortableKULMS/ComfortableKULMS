@@ -82,6 +82,17 @@ export function SettingsTab(props: { onSettingsChange: (change: SettingsChange) 
                     })
                 }
             />
+            <TranslatedBooleanItem
+                descriptionTag="settings_collapse_home"
+                value={settings.miniSakaiOption.collapseHome}
+                onChange={(v) =>
+                    props.onSettingsChange({
+                        type: "boolean",
+                        id: "miniSakaiOption.collapseHome",
+                        newValue: v
+                    })
+                }
+            />
             <TranslatedNumberItem
                 descriptionTag="settings_assignment_cache"
                 value={settings.cacheInterval.assignment}

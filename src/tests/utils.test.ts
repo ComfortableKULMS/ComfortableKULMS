@@ -24,7 +24,8 @@ describe("getFetchTime(showCompleted)", () => {
         settings.miniSakaiOption = {
             showCompletedEntry: true,
             showLateAcceptedEntry: false,
-            showTopNavLink: true
+            showTopNavLink: true,
+            collapseHome: true
         };
         settings.appInfo.currentTime = 100;
         const input: Array<EntryProtocol> = [
@@ -41,7 +42,8 @@ describe("getFetchTime(showCompleted)", () => {
         settings.miniSakaiOption = {
             showCompletedEntry: true,
             showLateAcceptedEntry: true,
-            showTopNavLink: true
+            showTopNavLink: true,
+            collapseHome: true
         };
         settings.appInfo.currentTime = 100;
         const input: Array<EntryProtocol> = [
@@ -58,7 +60,8 @@ describe("getFetchTime(showCompleted)", () => {
         settings.miniSakaiOption = {
             showCompletedEntry: true,
             showLateAcceptedEntry: false,
-            showTopNavLink: true
+            showTopNavLink: true,
+            collapseHome: true
         };
         settings.appInfo.currentTime = 100;
         const input: Array<EntryProtocol> = [
@@ -75,7 +78,8 @@ describe("getFetchTime(showCompleted)", () => {
         settings.miniSakaiOption = {
             showCompletedEntry: true,
             showLateAcceptedEntry: true,
-            showTopNavLink: true
+            showTopNavLink: true,
+            collapseHome: true
         };
         settings.appInfo.currentTime = 100;
         const input: Array<EntryProtocol> = [
@@ -92,7 +96,8 @@ describe("getFetchTime(showCompleted)", () => {
         settings.miniSakaiOption = {
             showCompletedEntry: true,
             showLateAcceptedEntry: false,
-            showTopNavLink: true
+            showTopNavLink: true,
+            collapseHome: true
         };
         settings.appInfo.currentTime = 500;
         const input: Array<EntryProtocol> = [
@@ -109,7 +114,8 @@ describe("getFetchTime(showCompleted)", () => {
         settings.miniSakaiOption = {
             showCompletedEntry: true,
             showLateAcceptedEntry: true,
-            showTopNavLink: true
+            showTopNavLink: true,
+            collapseHome: true
         };
         settings.appInfo.currentTime = 500;
         const input: Array<EntryProtocol> = [
