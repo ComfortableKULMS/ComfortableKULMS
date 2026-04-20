@@ -1,5 +1,5 @@
 {
-  "name": "Comfortable PandA",
+  "name": "Comfortable KULMS",
   "description": "__MSG_EXTENSION_DESCRIPTION__",
   "version": "----",
   "manifest_version": 2,
@@ -10,7 +10,7 @@
     "128": "img/icon128.png"
   },
   "browser_action": {
-    "default_title": "Comfortable PandA",
+    "default_title": "Comfortable KULMS",
     "default_popup": "popup.html"
   },
   "content_scripts": [
