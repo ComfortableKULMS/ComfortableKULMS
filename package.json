@@ -1,6 +1,6 @@
 {
   "name": "comfortable-kulms",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "description": "Comfortable KULMS is a browser extension for managing assignments and quizzes on KULMS.",
   "main": "index.ts",
   "scripts": {

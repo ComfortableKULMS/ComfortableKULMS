@@ -1,5 +1,5 @@
 {
-  "EXTENSION_DESCRIPTION": {"message": "Comfortable PandA is a Web browser extension for managing assignments and quizzes on PandA."},
+  "EXTENSION_DESCRIPTION": {"message": "Comfortable KULMS is a Web browser extension for managing assignments and quizzes on KULMS."},
   "tab_assignments": {"message": "Assignments"},
   "tab_settings": {"message": "Settings"},
   "todo_box_course_name": {"message": "Course Name"},
