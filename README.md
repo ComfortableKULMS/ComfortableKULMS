@@ -15,7 +15,7 @@ Comfortable PandAをその他のSakai LMSでも動作するように改良し，
 
 
 # ダウンロードリンク
-- [Google Chrome](https://chrome.google.com/webstore/detail/comfortable-panda/cecjhdkagakhonnmddjgncmdldmppnoe)
+- [Google Chrome](https://chromewebstore.google.com/detail/onohpbgkocnlidodbecakcgkjehnglpk?utm_source=item-share-cb)
 - [Firefox](https://tinaxd.github.io/comfortable-panda-firefox-updates/index.html)
 - [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/njbljhcmnodocldppoiejkcmcebpmljc)
 - [Safari](https://apps.apple.com/jp/app/comfortable-panda/id1572408187?mt=12)
