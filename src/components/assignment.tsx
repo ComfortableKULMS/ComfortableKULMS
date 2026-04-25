@@ -46,7 +46,7 @@ export default function AssignmentEntryView(props: {
                         <button
                             type="button"
                             className="cs-assignment-title-link"
-                            onClick={() => chrome.tabs.create({ url: props.entryURL!, active: true })}
+                            onClick={() => chrome.tabs.create({ url: props.entryURL, active: true })}
                         >
                             {props.assignment.title}
                         </button>

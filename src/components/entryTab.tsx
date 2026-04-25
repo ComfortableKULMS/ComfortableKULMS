@@ -51,7 +51,14 @@ function MiniSakaiCourse(props: {
         for (const entry of props.entries) {
             if (entry instanceof AssignmentEntry) {
                 const entryURL = toolPlacementId
-                    ? `${courseOrigin}/portal/site/${props.courseID}/tool/${toolPlacementId}?assignmentReference=/assignment/a/${props.courseID}/${entry.id}&sakai_action=doView_submission`
+                    ? (() => {
+                        const url = new URL(
+                            `${courseOrigin}/portal/site/${props.courseID}/tool/${toolPlacementId}`
+                        );
+                        url.searchParams.set("assignmentReference", `/assignment/a/${props.courseID}/${entry.id}`);
+                        url.searchParams.set("sakai_action", "doView_submission");
+                        return url.toString();
+                    })()
                     : undefined;
                 elems.push(
                     <AssignmentEntryView
@@ -418,7 +425,9 @@ function MiniSakaiEntryList(props: {
         const courseName = courseNameMap.get(courseID) ?? "<unknown>";
         const sortedEntries = entries.sort(sortEntries);
         const hostname = props.settings.appInfo.hostname;
-        const firstAssignment = sortedEntries.find(e => e instanceof AssignmentEntry) as AssignmentEntry | undefined;
+        const firstAssignment = sortedEntries.find(
+            (e): e is AssignmentEntry => e instanceof AssignmentEntry
+        );
         const coursePage = firstAssignment?.assignmentPageURL
             ?? `https://${hostname}/portal/site/${courseID}`;
         courses.push(
