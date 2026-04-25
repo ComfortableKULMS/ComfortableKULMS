@@ -32,15 +32,33 @@ function MiniSakaiCourse(props: {
     const divClass = useMemo(() => `cs-assignment-${props.dueType}`, [props.dueType]);
     const aClass = useMemo(() => `cs-course-${props.dueType} cs-course-name`, [props.dueType]);
 
+    const toolPlacementId = useMemo(() => {
+        const match = props.coursePage.match(/\/(?:page|tool-reset)\/([^/?#]+)/);
+        return match ? match[1] : null;
+    }, [props.coursePage]);
+
+    const toolResetURL = useMemo(() => {
+        if (!toolPlacementId) return props.coursePage;
+        return props.coursePage.replace(/\/(?:page|tool-reset)\/[^/?#]+/, `/tool-reset/${toolPlacementId}`);
+    }, [props.coursePage, toolPlacementId]);
+
+    const courseOrigin = useMemo(() => {
+        try { return new URL(props.coursePage).origin; } catch { return ""; }
+    }, [props.coursePage]);
+
     const elements = useMemo(() => {
         const elems: JSX.Element[] = [];
         for (const entry of props.entries) {
             if (entry instanceof AssignmentEntry) {
+                const entryURL = toolPlacementId
+                    ? `${courseOrigin}/portal/site/${props.courseID}/tool/${toolPlacementId}?assignmentReference=/assignment/a/${props.courseID}/${entry.id}&sakai_action=doView_submission`
+                    : undefined;
                 elems.push(
                     <AssignmentEntryView
                         key={entry.getID()}
                         isSubset={props.isSubset}
                         assignment={entry}
+                        entryURL={entryURL}
                         onCheck={(checked) => props.onCheck(entry, checked)}
                     />
                 );
@@ -66,7 +84,7 @@ function MiniSakaiCourse(props: {
             }
         }
         return elems;
-    }, [props]);
+    }, [props, toolPlacementId, courseOrigin]);
 
     return (
         // TODO: style
@@ -75,12 +93,12 @@ function MiniSakaiCourse(props: {
             {props.isSubset ? (
                 <button className={`${aClass} course-button`} onClick={() => {
                     chrome.tabs.create({
-                        url: props.coursePage,
+                        url: toolResetURL,
                         active: true
                     })
                 }}>{props.courseName}</button>
             ) : (
-                <a className={aClass} href={props.coursePage}>
+                <a className={aClass} href={toolResetURL}>
                     {props.courseName}
                 </a>
             )}
@@ -398,15 +416,20 @@ function MiniSakaiEntryList(props: {
     const courses: JSX.Element[] = [];
     for (const [courseID, entries] of courseIdMap.entries()) {
         const courseName = courseNameMap.get(courseID) ?? "<unknown>";
+        const sortedEntries = entries.sort(sortEntries);
+        const hostname = props.settings.appInfo.hostname;
+        const firstAssignment = sortedEntries.find(e => e instanceof AssignmentEntry) as AssignmentEntry | undefined;
+        const coursePage = firstAssignment?.assignmentPageURL
+            ?? `https://${hostname}/portal/site/${courseID}`;
         courses.push(
             <MiniSakaiCourse
                 key={courseID}
                 courseID={courseID}
                 courseName={courseName}
-                coursePage={"https://" + props.settings.appInfo.hostname + "/portal/site/" + courseID}
+                coursePage={coursePage}
                 isSubset={props.isSubset}
                 dueType={props.dueType}
-                entries={entries.sort(sortEntries)}
+                entries={sortedEntries}
                 onCheck={(entry, checked) => props.onCheck(entry, checked)}
                 onDelete={(entry) => props.onDelete(entry)}
             />
