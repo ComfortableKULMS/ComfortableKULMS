@@ -12,7 +12,7 @@ export const getSakaiQuizzes = async (hostname: string, courses: Array<Course>):
     for (const course of courses) {
         pending.push(fetchQuiz(course));
     }
-    const result = await (Promise as any).allSettled(pending);
+    const result = await Promise.allSettled(pending);
     for (const quiz of result) {
         if (quiz.status === "fulfilled") quizzes.push(quiz.value);
     }
