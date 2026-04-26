@@ -408,7 +408,7 @@
     border: none;
     padding: 0;
     font-size: 13px;
-    color: var(--textColor);
+    color: var(--textColor) !important; /* リンクのデフォルトの色を打ち消す */
     text-decoration: underline;
     cursor: pointer;
     word-break: break-word;
