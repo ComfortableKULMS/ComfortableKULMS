@@ -51,8 +51,14 @@ const fetchToolPlacementURL = async (pageURL: string): Promise<string | null> =>
     }
 };
 
+/* course.id ごとに解決済み assignment page URL をキャッシュする */
+const assignmentPageURLCache = new Map<string, string>();
+
 /* /direct/site/[siteId].json の sitePages から「課題」ページの tool-reset URL を取得する */
 const fetchAssignmentPageURL = async (siteId: string): Promise<string | null> => {
+    const cached = assignmentPageURLCache.get(siteId);
+    if (cached !== undefined) return cached;
+
     const queryURL = getBaseURL() + "/direct/site/" + siteId + ".json";
     try {
         const response = await fetch(queryURL, { cache: "no-cache" });
@@ -61,7 +67,9 @@ const fetchAssignmentPageURL = async (siteId: string): Promise<string | null> =>
         const pages: any[] = data.sitePages ?? [];
         for (const page of pages) {
             if (page.title === "課題" && page.url) {
-                return await fetchToolPlacementURL(page.url);
+                const url = await fetchToolPlacementURL(page.url);
+                if (url) assignmentPageURLCache.set(siteId, url);
+                return url;
             }
         }
         return null;
