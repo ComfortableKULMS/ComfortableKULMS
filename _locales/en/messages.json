@@ -104,8 +104,15 @@
   "google_calendar_create_calendar": {"message": "Create app calendar"},
   "google_calendar_create_test_event": {"message": "Add test event"},
   "google_calendar_sync_assignments": {"message": "Sync assignments"},
+  "google_calendar_export_ics": {"message": "Export ICS"},
   "google_calendar_sync_target_count": {
     "message": "Sync targets: $count$",
+    "placeholders": {
+      "count": { "content": "$1" }
+    }
+  },
+  "google_calendar_export_target_count": {
+    "message": "ICS export targets: $count$",
     "placeholders": {
       "count": { "content": "$1" }
     }
@@ -127,6 +134,12 @@
       "updated": { "content": "$2" },
       "deleted": { "content": "$3" },
       "skipped": { "content": "$4" }
+    }
+  },
+  "google_calendar_status_ics_exported": {
+    "message": "ICS exported ($count$ items)",
+    "placeholders": {
+      "count": { "content": "$1" }
     }
   },
   "google_calendar_status_no_assignments": {"message": "No assignments to sync"},

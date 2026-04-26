@@ -105,8 +105,15 @@
   "google_calendar_create_calendar": {"message": "専用カレンダー作成"},
   "google_calendar_create_test_event": {"message": "テストイベント追加"},
   "google_calendar_sync_assignments": {"message": "課題を一括同期"},
+  "google_calendar_export_ics": {"message": "ICSを書き出す"},
   "google_calendar_sync_target_count": {
     "message": "同期対象: $count$件",
+    "placeholders": {
+      "count": { "content": "$1" }
+    }
+  },
+  "google_calendar_export_target_count": {
+    "message": "ICS出力対象: $count$件",
     "placeholders": {
       "count": { "content": "$1" }
     }
@@ -128,6 +135,12 @@
       "updated": { "content": "$2" },
       "deleted": { "content": "$3" },
       "skipped": { "content": "$4" }
+    }
+  },
+  "google_calendar_status_ics_exported": {
+    "message": "ICSを書き出しました（$count$件）",
+    "placeholders": {
+      "count": { "content": "$1" }
     }
   },
   "google_calendar_status_no_assignments": {"message": "同期できる課題がありません"},

@@ -65,6 +65,19 @@ type GoogleCalendarSyncAssignmentsRequest = {
     assignments: AssignmentSyncItem[];
 };
 
+type AssignmentIcsItem = {
+    assignmentKey: string;
+    courseName: string;
+    title: string;
+    dueTime: number;
+    entryURL?: string;
+};
+
+type BuildAssignmentIcsRequest = {
+    type: "build-assignment-ics";
+    assignments: AssignmentIcsItem[];
+};
+
 type GoogleCalendarProbeResponse = {
     ok: boolean;
     calendars?: Array<{
@@ -104,6 +117,15 @@ type GoogleCalendarSyncAssignmentsResponse = {
     error?: string;
 };
 
+type BuildAssignmentIcsResponse = {
+    ok: boolean;
+    ics?: string;
+    fileName?: string;
+    exported?: number;
+    skipped?: number;
+    error?: string;
+};
+
 const sendBackgroundMessage = <T,>(
     message:
         | GoogleCalendarProbeRequest
@@ -111,6 +133,7 @@ const sendBackgroundMessage = <T,>(
         | GoogleCalendarEnsureCalendarRequest
         | GoogleCalendarCreateTestEventRequest
         | GoogleCalendarSyncAssignmentsRequest
+        | BuildAssignmentIcsRequest
 ): Promise<T> => {
     return new Promise((resolve, reject) => {
         chrome.runtime.sendMessage(message, (response: T | undefined) => {
@@ -254,6 +277,36 @@ export class MiniSakaiRoot extends React.Component<MiniSakaiRootProps, MiniSakai
         return items;
     }
 
+    private collectAssignmentIcsItems(): AssignmentIcsItem[] {
+        const items: AssignmentIcsItem[] = [];
+        const nowTimestamp = Date.now() / 1000;
+
+        for (const entity of this.state.entities) {
+            if (!(entity instanceof Assignment)) continue;
+
+            const course = entity.getCourse();
+            for (const entry of entity.entries) {
+                if (entry.hasFinished) continue;
+
+                const dueTime = typeof entry.dueTime === "number" && entry.dueTime > 0 ? entry.dueTime : undefined;
+                const closeTime =
+                    typeof entry.closeTime === "number" && entry.closeTime > 0 ? entry.closeTime : undefined;
+                const targetDueTime = dueTime ?? closeTime;
+                if (typeof targetDueTime === "undefined" || targetDueTime <= nowTimestamp) continue;
+
+                items.push({
+                    assignmentKey: `${course.id}:${entry.id}`,
+                    courseName: course.name ?? "(unknown course)",
+                    title: entry.title,
+                    dueTime: targetDueTime,
+                    entryURL: buildAssignmentEntryURL(course.id, entry)
+                });
+            }
+        }
+
+        return items;
+    }
+
     componentDidUpdate(prevProps: MiniSakaiRootProps, prevState: MiniSakaiRootState) {
         if (!_.isEqual(prevState.entities, this.state.entities)) {
             getStoredSettings(this.props.hostname).then((s) => {
@@ -280,6 +333,7 @@ export class MiniSakaiRoot extends React.Component<MiniSakaiRootProps, MiniSakai
         const entryTabShown = this.state.shownTab === "assignment";
         const settingsTabShown = this.state.shownTab === "settings";
         const assignmentSyncItems = this.collectAssignmentSyncItems();
+        const assignmentIcsItems = this.collectAssignmentIcsItems();
 
         return (
             <MiniSakaiContext.Provider
@@ -289,7 +343,9 @@ export class MiniSakaiRoot extends React.Component<MiniSakaiRootProps, MiniSakai
             >
                 <MiniSakaiLogo />
                 <MiniSakaiVersion />
-                {this.props.subset ? <GoogleCalendarQuickActions assignments={assignmentSyncItems} /> : null}
+                {this.props.subset ? (
+                    <GoogleCalendarQuickActions assignments={assignmentSyncItems} icsAssignments={assignmentIcsItems} />
+                ) : null}
                 {this.props.subset ? null : (
                     <>
                         <MiniSakaiClose onClose={() => toggleMiniSakai()} />
@@ -417,18 +473,20 @@ function MiniSakaiQuizTime() {
     return <MiniSakaiTimeBox clazz='cs-quiz-time' title={title} time={time} />;
 }
 
-function GoogleCalendarQuickActions(props: { assignments: AssignmentSyncItem[] }) {
+function GoogleCalendarQuickActions(props: { assignments: AssignmentSyncItem[]; icsAssignments: AssignmentIcsItem[] }) {
     const title = useTranslation("google_calendar_section_title");
     const connectLabel = useTranslation("google_calendar_connect");
     const disconnectLabel = useTranslation("google_calendar_disconnect");
     const createCalendarLabel = useTranslation("google_calendar_create_calendar");
     const createTestEventLabel = useTranslation("google_calendar_create_test_event");
     const syncAssignmentsLabel = useTranslation("google_calendar_sync_assignments");
+    const exportIcsLabel = useTranslation("google_calendar_export_ics");
     const statusIdle = useTranslation("google_calendar_status_idle");
     const statusChecking = useTranslation("google_calendar_status_checking");
     const statusCalendarReady = useTranslation("google_calendar_status_calendar_ready");
     const statusTestEventAdded = useTranslation("google_calendar_status_test_event_added");
     const statusDisconnected = useTranslation("google_calendar_status_disconnected");
+    const statusNoAssignments = useTranslation("google_calendar_status_no_assignments");
     const statusErrorPrefix = useTranslation("google_calendar_status_error");
 
     const [calendarCount, setCalendarCount] = useState(0);
@@ -442,10 +500,21 @@ function GoogleCalendarQuickActions(props: { assignments: AssignmentSyncItem[] }
     const [syncUpdatedCount, setSyncUpdatedCount] = useState(0);
     const [syncDeletedCount, setSyncDeletedCount] = useState(0);
     const [syncSkippedCount, setSyncSkippedCount] = useState(0);
+    const [icsExportedCount, setIcsExportedCount] = useState(0);
     const syncTargetCount = useTranslationArgsDeps(
         "google_calendar_sync_target_count",
         [String(props.assignments.length)],
         [props.assignments.length]
+    );
+    const icsTargetCount = useTranslationArgsDeps(
+        "google_calendar_export_target_count",
+        [String(props.icsAssignments.length)],
+        [props.icsAssignments.length]
+    );
+    const statusIcsExported = useTranslationArgsDeps(
+        "google_calendar_status_ics_exported",
+        [String(icsExportedCount)],
+        [icsExportedCount]
     );
     const statusSynced = useTranslationArgsDeps(
         "google_calendar_status_synced",
@@ -455,7 +524,16 @@ function GoogleCalendarQuickActions(props: { assignments: AssignmentSyncItem[] }
 
     const [isLoading, setIsLoading] = useState(false);
     const [status, setStatus] = useState<
-        "idle" | "checking" | "connected" | "calendar-ready" | "test-event-added" | "sync-complete" | "disconnected" | "error"
+        | "idle"
+        | "checking"
+        | "connected"
+        | "calendar-ready"
+        | "test-event-added"
+        | "sync-complete"
+        | "ics-exported"
+        | "no-assignments"
+        | "disconnected"
+        | "error"
     >("idle");
     const [errorText, setErrorText] = useState("");
     const [calendarPreview, setCalendarPreview] = useState("");
@@ -592,12 +670,61 @@ function GoogleCalendarQuickActions(props: { assignments: AssignmentSyncItem[] }
         }
     };
 
+    const runExportIcs = async () => {
+        setIsLoading(true);
+        setStatus("checking");
+        setErrorText("");
+
+        try {
+            const response = await sendBackgroundMessage<BuildAssignmentIcsResponse>({
+                type: "build-assignment-ics",
+                assignments: props.icsAssignments
+            });
+
+            if (!response.ok) {
+                throw new Error(response.error ?? "Unknown error");
+            }
+
+            const exported = response.exported ?? 0;
+            if (exported <= 0 || typeof response.ics !== "string" || response.ics.length === 0) {
+                setIcsExportedCount(0);
+                setStatus("no-assignments");
+                return;
+            }
+
+            const blob = new Blob([response.ics], { type: "text/calendar;charset=utf-8" });
+            const objectURL = URL.createObjectURL(blob);
+
+            try {
+                const link = document.createElement("a");
+                link.href = objectURL;
+                link.download = response.fileName ?? "comfortable-kulms-assignments.ics";
+                link.style.display = "none";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } finally {
+                URL.revokeObjectURL(objectURL);
+            }
+
+            setIcsExportedCount(exported);
+            setStatus("ics-exported");
+        } catch (error) {
+            setStatus("error");
+            setErrorText(error instanceof Error ? error.message : "Unexpected error");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     let statusText = statusIdle;
     if (status === "checking") statusText = statusChecking;
     if (status === "connected") statusText = statusConnected;
     if (status === "calendar-ready") statusText = statusCalendarReady;
     if (status === "test-event-added") statusText = statusTestEventAdded;
     if (status === "sync-complete") statusText = statusSynced;
+    if (status === "ics-exported") statusText = statusIcsExported;
+    if (status === "no-assignments") statusText = statusNoAssignments;
     if (status === "disconnected") statusText = statusDisconnected;
 
     return (
@@ -621,8 +748,12 @@ function GoogleCalendarQuickActions(props: { assignments: AssignmentSyncItem[] }
                 <button type="button" onClick={runSyncAssignments} disabled={isLoading}>
                     {syncAssignmentsLabel}
                 </button>
+                <button type="button" onClick={runExportIcs} disabled={isLoading}>
+                    {exportIcsLabel}
+                </button>
             </div>
             <p className="cs-google-calendar-text">{syncTargetCount}</p>
+            <p className="cs-google-calendar-text">{icsTargetCount}</p>
             <p className="cs-google-calendar-text">{statusText}</p>
             {calendarPreview.length > 0 ? <p className="cs-google-calendar-text">{calendarPreview}</p> : null}
             {status === "error" ? (
