@@ -45,7 +45,8 @@ const fetchToolPlacementURL = async (pageURL: string): Promise<string | null> =>
         if (!match) return null;
         const toolPlacementId = match[1];
         return finalURL.replace(/\/tool(?:-reset)?\/[^/?#]+.*$/, `/tool-reset/${toolPlacementId}`);
-    } catch {
+    } catch (err) {
+        console.error(err);
         return null;
     }
 };
@@ -64,7 +65,8 @@ const fetchAssignmentPageURL = async (siteId: string): Promise<string | null> =>
             }
         }
         return null;
-    } catch {
+    } catch (err) {
+        console.error(err);
         return null;
     }
 };
