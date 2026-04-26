@@ -28,8 +28,18 @@
     "service_worker": "background.js"
   },
   "permissions": [
-    "storage"
+    "storage",
+    "identity"
   ],
+  "host_permissions": [
+    "https://www.googleapis.com/*"
+  ],
+  "oauth2": {
+    "client_id": "1046661662467-ogsmnv5pmvomjn0vap4on28kisk2aj71.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/calendar"
+    ]
+  },
   "web_accessible_resources": [
     {
       "resources": [

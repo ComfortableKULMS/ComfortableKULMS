@@ -755,6 +755,44 @@
     width: 65px;
 }
 
+.cs-google-calendar-panel {
+    margin: 6px 10px 10px;
+    padding-bottom: 8px;
+}
+
+.cs-google-calendar-title,
+.cs-google-calendar-text {
+    display: block;
+    margin: 4px 0;
+    color: var(--textColor);
+    font-weight: bold;
+}
+
+.cs-google-calendar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 4px 0;
+}
+
+.cs-google-calendar-actions button {
+    border: 1px solid #9a9a9a;
+    border-radius: 4px;
+    background-color: #f3f3f3;
+    color: #303030;
+    font-size: 12px;
+    padding: 4px 10px;
+    white-space: nowrap;
+}
+
+.cs-google-calendar-actions button:disabled {
+    opacity: 0.6;
+}
+
+.cs-google-calendar-error {
+    color: #b42318;
+}
+
 .cs-memo-item {
     padding-top: 5px;
     display: block;

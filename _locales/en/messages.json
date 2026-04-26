@@ -97,5 +97,39 @@
     "placeholders": {
       "name": { "content": "$1" }
     }
-  }
+  },
+  "google_calendar_section_title": {"message": "Google Calendar"},
+  "google_calendar_connect": {"message": "Connect test"},
+  "google_calendar_disconnect": {"message": "Disconnect"},
+  "google_calendar_create_calendar": {"message": "Create app calendar"},
+  "google_calendar_create_test_event": {"message": "Add test event"},
+  "google_calendar_sync_assignments": {"message": "Sync assignments"},
+  "google_calendar_sync_target_count": {
+    "message": "Sync targets: $count$",
+    "placeholders": {
+      "count": { "content": "$1" }
+    }
+  },
+  "google_calendar_status_idle": {"message": "Not connected"},
+  "google_calendar_status_checking": {"message": "Authenticating..."},
+  "google_calendar_status_calendar_ready": {"message": "App calendar is ready"},
+  "google_calendar_status_test_event_added": {"message": "Test event added"},
+  "google_calendar_status_connected": {
+    "message": "Connected (checked $count$ calendars)",
+    "placeholders": {
+      "count": { "content": "$1" }
+    }
+  },
+  "google_calendar_status_synced": {
+    "message": "Sync complete (created $created$ / updated $updated$ / deleted $deleted$ / skipped $skipped$)",
+    "placeholders": {
+      "created": { "content": "$1" },
+      "updated": { "content": "$2" },
+      "deleted": { "content": "$3" },
+      "skipped": { "content": "$4" }
+    }
+  },
+  "google_calendar_status_no_assignments": {"message": "No assignments to sync"},
+  "google_calendar_status_disconnected": {"message": "Disconnected"},
+  "google_calendar_status_error": {"message": "Connection error"}
 }
