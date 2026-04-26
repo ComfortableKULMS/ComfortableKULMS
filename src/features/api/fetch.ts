@@ -80,41 +80,50 @@ const fetchAssignmentPageURL = async (siteId: string): Promise<string | null> =>
 };
 
 /* Sakai APIから課題を取得する */
-export const fetchAssignment = (course: Course): Promise<Assignment> => {
+export const fetchAssignment = async (course: Course): Promise<Assignment> => {
     const queryURL = getBaseURL() + "/direct/assignment/site/" + course.id + ".json";
-    return new Promise((resolve, reject) => {
-        fetch(queryURL, { cache: "no-cache" })
-            .then(async (response) => {
-                if (response.ok) {
-                    const data = await response.json();
-                    const assignmentEntries = decodeAssignmentFromAPI(data);
-                    const assignmentPageURL = await fetchAssignmentPageURL(course.id);
-                    if (assignmentPageURL) {
-                        assignmentEntries.forEach(e => { e.assignmentPageURL = assignmentPageURL; });
-                    }
-                    resolve(new Assignment(course, assignmentEntries, false));
-                } else {
-                    reject(`Request failed: ${response.status}`);
-                }
-            })
-            .catch((err) => console.error(err)); // Error: Request failed: 404
-    });
+
+    try {
+        const response = await fetch(queryURL, { cache: "no-cache" });
+
+        if (!response.ok) {
+            throw new Error(`Request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const assignmentEntries = decodeAssignmentFromAPI(data);
+        const assignmentPageURL = await fetchAssignmentPageURL(course.id);
+
+        if (assignmentPageURL) {
+            assignmentEntries.forEach(e => { e.assignmentPageURL = assignmentPageURL; });
+        }
+
+        return new Assignment(course, assignmentEntries, false);
+
+    } catch (err) {
+        console.error(err); // Error: Request failed: 404
+        throw err; // rethrow
+    }
 };
 
 /* Sakai APIからクイズを取得する */
-export const fetchQuiz = (course: Course): Promise<Quiz> => {
+export const fetchQuiz = async (course: Course): Promise<Quiz> => {
     const queryURL = getBaseURL() + "/direct/sam_pub/context/" + course.id + ".json";
-    return new Promise((resolve, reject) => {
-        fetch(queryURL, { cache: "no-cache" })
-            .then(async (response) => {
-                if (response.ok) {
-                    const data = await response.json();
-                    const quizEntries = decodeQuizFromAPI(data);
-                    resolve(new Quiz(course, quizEntries, true));
-                } else {
-                    reject(`Request failed: ${response.status}`);
-                }
-            })
-            .catch((err) => console.error(err)); // Error: Request failed: 404
-    });
+
+    try {
+        const response = await fetch(queryURL, { cache: "no-cache" });
+
+        if (!response.ok) {
+            throw new Error(`Request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const quizEntries = decodeQuizFromAPI(data);
+
+        return new Quiz(course, quizEntries, true);
+
+    } catch (err) {
+        console.error(err); // Error: Request failed: 404
+        throw err; // rethrow
+    }
 };
