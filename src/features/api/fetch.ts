@@ -122,7 +122,7 @@ export const fetchQuiz = async (course: Course): Promise<Quiz> => {
 
         return new Quiz(course, quizEntries, true);
 
-    } catch(err) {
+    } catch (err) {
         console.error(err); // Error: Request failed: 404
         throw err; // rethrow
     }
