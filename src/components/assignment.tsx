@@ -7,6 +7,7 @@ import { useTranslation } from "./helper";
 export default function AssignmentEntryView(props: {
     assignment: AssignmentEntry;
     isSubset: boolean;
+    entryURL?: string;
     onCheck: (checked: boolean) => void;
 }) {
     const dueTime = props.assignment.isDuePassed(CurrentTime) ? props.assignment.closeTime : props.assignment.dueTime;
@@ -40,7 +41,23 @@ export default function AssignmentEntryView(props: {
                 {props.assignment.isDuePassed(CurrentTime) && (
                     <span className="cs-badge cs-badge-late">{lateBadge}</span>
                 )}
-                {props.assignment.title}
+                {props.entryURL ? (
+                    props.isSubset ? (
+                        <button
+                            type="button"
+                            className="cs-assignment-title-link"
+                            onClick={() => chrome.tabs.create({ url: props.entryURL, active: true })}
+                        >
+                            {props.assignment.title}
+                        </button>
+                    ) : (
+                        <a href={props.entryURL} className="cs-assignment-title-link">
+                            {props.assignment.title}
+                        </a>
+                    )
+                ) : (
+                    props.assignment.title
+                )}
             </p>
         </>
     );

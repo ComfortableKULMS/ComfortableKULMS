@@ -8,7 +8,9 @@ export class AssignmentEntry implements EntryProtocol {
         public title: string,
         public dueTime: number,
         public closeTime: number,
-        public hasFinished: boolean
+        public hasFinished: boolean,
+        public entityURL?: string,
+        public assignmentPageURL?: string
     ) {}
 
     getTimestamp(currentTime: number, showLateAcceptedEntry: boolean): number {
