@@ -8,6 +8,8 @@ import { createKulmsTopNav } from "./features/topnav/topnav";
 import { getStoredSettings } from "./features/setting/getSetting";
 import { handleCollapseHome } from "./features/homeClose/homeClose";
 
+import { injectMigrationPopup } from "./utils";
+
 async function main() {
     if (isLoggedIn()) {
         createMiniSakaiBtn();
@@ -22,6 +24,8 @@ async function main() {
         handleCollapseHome(settings);
         injectPdfThumbnails();
         injectThumbnailsToOngoingAssignment();
+
+        injectMigrationPopup();
     }
 }
 

@@ -187,3 +187,85 @@ export function createDateString(seconds: number | null | undefined): string {
 }
 
 export { getDaysUntil, formatTimestamp, isLoggedIn, miniSakaiReady };
+
+
+
+export const injectMigrationPopup = () => {
+    // 1. 現在のページが「ホーム画面」かどうかを判定
+    const isHome = document.querySelector('.is-current-site[data-type="home"]') !== null;
+    const isTopPage = window.location.pathname === '/portal' || window.location.pathname === '/portal/';
+    
+    // ホーム画面でなければ何もしない
+    if (!isHome && !isTopPage) return;
+
+    // 3. 画面全体を覆う半透明の黒い背景（オーバーレイ）を作成
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 100000; /* KULMSのヘッダーよりも上に表示 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `;
+
+    // 4. 中央の白いポップアップ本体を作成
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: #fff;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        text-align: center;
+        max-width: 500px;
+        width: 90%;
+        font-family: sans-serif;
+    `;
+
+    // 5. 中身のテキストやボタン（※拡張機能のURLを書き換えてください）
+    modal.innerHTML = `
+        <h2 style="color: #d32f2f; margin-top: 0; font-size: 22px;">⚠️ 拡張機能 移行のお願い</h2>
+        <p style="font-size: 15px; line-height: 1.6; color: #333; margin-bottom: 25px; text-align: left;">
+            現在お使いの「Comfortable KULMS」は、今後のアップデートが停止されます。<br><br>
+            お手数ですが、以下のリンクから<b>新しい（元Comfortable PandA）拡張機能をインストール</b>し、現在お使いのこの拡張機能は<b>Chromeから削除（アンインストール）</b>をお願いいたします。
+        </p>
+        <a href="https://chromewebstore.google.com/detail/cecjhdkagakhonnmddjgncmdldmppnoe?utm_source=item-share-cb" target="_blank" rel="noopener noreferrer" style="
+            display: inline-block;
+            background-color: #1976d2;
+            color: #fff;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: background 0.2s;
+        " onmouseover="this.style.backgroundColor='#1565c0'" onmouseout="this.style.backgroundColor='#1976d2'">
+            新しい拡張機能をインストール
+        </a>
+        <br>
+        <button id="cs-close-migration-popup" style="
+            background: transparent;
+            border: 1px solid #aaa;
+            color: #666;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        " onmouseover="this.style.backgroundColor='#f5f5f5'" onmouseout="this.style.backgroundColor='transparent'">
+            今は閉じる
+        </button>
+    `;
+
+    // 6. 画面に追加
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    // 7. 「今は閉じる」ボタンを押したときの処理
+    document.getElementById('cs-close-migration-popup')?.addEventListener('click', () => {
+        // 画面から消す
+        overlay.remove();
+    });
+};
